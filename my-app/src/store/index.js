@@ -2,16 +2,19 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    client: {}, // ✅ Ensure this exists
+    client: null
   },
   mutations: {
-    setClient(state, client) {
+    SET_CLIENT(state, client) {
       state.client = client;
     }
   },
   actions: {
     saveClient({ commit }, client) {
-      commit('setClient', client);
+      commit('SET_CLIENT', client);
     }
+  },
+  getters: {
+    getClient: (state) => state.client
   }
 });

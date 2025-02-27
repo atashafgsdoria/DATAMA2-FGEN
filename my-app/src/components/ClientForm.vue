@@ -43,54 +43,59 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'; // ✅ Import Vuex actions
-import supabase from '@/supabase'; // ✅ Import Supabase instance
+import { useStore } from 'vuex'; // ✅ Correct Vuex import for Vue 3
 import { useRouter } from 'vue-router';
+import supabase from '@/supabase';
+import { ref, computed } from 'vue';
 
 export default {
-  data() {
-    return {
-      client: {
-        lastName: '',
-        givenName: '',
-        middleName: '',
-        dob: '',
-        interestOnProperty: '',
-        phoneNumber: '',
-        email: '',
-        mailingAddress: '',
-        residentialTelephone: '',
-        officeTelephone: '',
-      },
-      legalAge: 18, // ✅ Set legal age for validation
-    };
-  },
-  computed: {
-    legalAgeDate() {
-      // ✅ Calculate legal age date limit
+  setup() {
+    const store = useStore(); // ✅ Vuex store
+    const router = useRouter(); // ✅ Vue Router
+
+    const client = ref({
+      lastName: '',
+      givenName: '',
+      middleName: '',
+      dob: '',
+      interestOnProperty: '',
+      phoneNumber: '',
+      email: '',
+      mailingAddress: '',
+      residentialTelephone: '',
+      officeTelephone: '',
+    });
+
+    const legalAge = 18;
+
+    const legalAgeDate = computed(() => {
       const today = new Date();
-      return new Date(today.setFullYear(today.getFullYear() - this.legalAge))
+      return new Date(today.setFullYear(today.getFullYear() - legalAge))
         .toISOString()
         .split('T')[0];
-    },
-  },
-  setup() {
-    const router = useRouter(); // ✅ Correct Vue Router usage
-    return { router };
-  },
-  methods: {
-    ...mapActions(['saveClient']), // ✅ Map Vuex store action
+    });
 
-    async submitForm() {
-      if (!this.validateForm()) {
+    const validateForm = () => {
+      return (
+        client.value.lastName &&
+        client.value.givenName &&
+        client.value.dob &&
+        client.value.interestOnProperty &&
+        /^\d{11}$/.test(client.value.phoneNumber) && // ✅ Ensures 11-digit phone number
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(client.value.email) // ✅ Basic email validation
+      );
+    };
+
+    const submitForm = async () => {
+      if (!validateForm()) {
         alert('Please fill in all required fields correctly.');
         return;
       }
 
       try {
         const { data, error } = await supabase
-          .from('Client') // ✅ Ensure correct table name (case-sensitive)
-          .insert([this.client])
+          .from('client') // ✅ Ensure lowercase table name
+          .insert([client.value])
           .select();
 
         if (error) throw error;
@@ -99,30 +104,25 @@ export default {
         }
 
         const savedClient = data[0];
-        this.saveClient(savedClient); // ✅ Save client in Vuex store
+        store.dispatch('saveClient', savedClient); // ✅ Dispatch action to Vuex
 
         alert('Form submitted successfully!');
-        this.router.push('/property-information'); // ✅ Corrected navigation
+        router.push('/property-information'); // ✅ Correct navigation
       } catch (error) {
         console.error('Error:', error);
-        alert('Error submitting form: ' + error.message);
+        alert('Error submitting form: ' + (error.message || error));
       }
-    },
+    };
 
-    validateForm() {
-      // ✅ Ensure required fields are filled
-      return (
-        this.client.lastName &&
-        this.client.givenName &&
-        this.client.dob &&
-        this.client.interestOnProperty &&
-        /^\d{11}$/.test(this.client.phoneNumber) && // ✅ Validates 11-digit phone number
-        this.client.email.includes('@')
-      );
-    },
+    return {
+      client,
+      legalAgeDate,
+      submitForm,
+    };
   },
 };
 </script>
+
 
 
 <style scoped>

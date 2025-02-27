@@ -25,8 +25,8 @@
         <label for="village_name">Village Name:</label>
         <input v-model="property.village_name" type="text" id="village_name">
 
-        <label for="condo_name">Condo Name:</label>
-        <input v-model="property.condo_name" type="text" id="condo_name">
+        <label for="condoname">Condo Name:</label>
+        <input v-model="property.condoname" type="text" id="condoname">
       </div>
     </div>
     <button @click="submitPropertyForm">Submit Property Information</button>
@@ -59,7 +59,7 @@ export default {
         city: '',
         barangay: '',
         village_name: '', // ✅ Match lowercase column name in DB
-        condo_name: '',   // ✅ Match lowercase column name in DB
+        condoname: '',   // ✅ Match lowercase column name in DB
       },
     };
   },
@@ -81,7 +81,7 @@ export default {
             city: this.property.city,
             barangay: this.property.barangay,
             village_name: this.property.village_name, // ✅ Match DB column
-            condo_name: this.property.condo_name, // Match DB column name exactly    // ✅ Match DB column
+            condoname: this.property.condoname, // Match DB column name exactly    // ✅ Match DB column
             client_id: this.client.client_id
           }])
           .select();

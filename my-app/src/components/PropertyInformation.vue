@@ -34,11 +34,7 @@
 </template>
 
 <script>
-import { createClient } from '@supabase/supabase-js';
-import { mapState } from 'vuex';
-import { useRouter } from 'vue-router';
-
-const supabase = createClient('https://qlldaarhspqfvvfpnuqf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsbGRhYXJoc3BxZnZ2ZnBudXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2NTY4ODIsImV4cCI6MjA1NjIzMjg4Mn0.Q3BCKZzUZ2oas4qPAj9qCNZekuYmSTDRPRcFrl7Wro4');
+import supabase from '@/supabase';  // ✅ Import the shared instance
 
 export default {
   data() {

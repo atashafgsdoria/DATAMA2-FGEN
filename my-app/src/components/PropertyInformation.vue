@@ -81,7 +81,7 @@ export default {
             city: this.property.city,
             barangay: this.property.barangay,
             village_name: this.property.village_name, // ✅ Match DB column
-            condo_name: this.property.condo_name,     // ✅ Match DB column
+            condo_name: this.property.condo_name, // Match DB column name exactly    // ✅ Match DB column
             client_id: this.client.client_id
           }])
           .select();

@@ -84,21 +84,15 @@ export default {
             condoname: this.property.condoname, // Match DB column name exactly    // ✅ Match DB column
             client_id: this.client.client_id
           }])
-          .select(*);
+          .select();
 
         if (error) throw error;
         if (!data || data.length === 0) {
           throw new Error('No data returned from Supabase.');
         }
 
-        const propertyinformation_id = data[0].propertyinformation_id; // ✅ Get the inserted ID
-
         alert('Property data saved!');
-        this.router.push({
-          path: '/property-description',
-          query: { propertyinformation_id } // ✅ Pass it to the next page
-        });
-
+        this.router.push('/property-description'); // ✅ Navigate
       } catch (error) {
         console.error('Error:', error);
         alert('Submission failed: ' + (error.message || 'Unknown error'));

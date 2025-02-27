@@ -213,19 +213,19 @@ export default {
   methods: {
     getDefaultPropertyState() {
       return {
-        noOfStorey: null,
-        yearBuilt: null,
-        floorArea: null,
+        noOfStorey: 1,  // Default to 1
+        yearBuilt: this.currentYear,
+        floorArea: 0,  // Default to 0
         roofing: 'galvanized-iron',
         roofingOther: '',
         occupancy: 'office',
         occupancyOther: '',
-        numberOfTenants: null,
+        numberOfTenants: 0, // Default to 0
         typeOfConstruction: 'class-a',
-        boundaryFront: null,
-        boundaryRight: null,
-        boundaryLeft: null,
-        boundaryRear: null,
+        boundaryFront: 0,
+        boundaryRight: 0,
+        boundaryLeft: 0,
+        boundaryRear: 0,
         locCongestedArea: 'no',
         locCongestedAreaDetails: '',
         locExplosive: 'no',
@@ -302,7 +302,7 @@ export default {
         const { error } = await supabase.from('propertydescription').insert([
           {
             propertyinformation_id: propertyDescriptionData.propertyinformation_id,
-            no_of_storey: propertyDescriptionData.noOfStorey ?? 0,  // Ensure numeric values default to 0
+            no_of_storey: propertyDescriptionData.noOfStorey ?? 0,
             year_built: propertyDescriptionData.yearBuilt ?? this.currentYear,
             floor_area: propertyDescriptionData.floorArea ?? 0,
             roofing: propertyDescriptionData.roofing,
@@ -341,16 +341,17 @@ export default {
         console.log('Property description submitted successfully.');
         alert('Property description saved successfully!');
 
-        // Reset form fields
-        this.property = this.getDefaultPropertyState();
+        // Navigate to the next step
+        this.$router.push('/next-step');
       } catch (error) {
         console.error('Unexpected error:', error);
-        alert('An unexpected error occurred.');
+        alert('An unexpected error occurred. Please try again.');
       }
     },
   },
 };
 </script>
+
 
 
 

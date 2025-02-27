@@ -41,7 +41,6 @@ const supabaseUrl = 'https://qlldaarhspqfvvfpnuqf.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsbGRhYXJoc3BxZnZ2ZnBudXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2NTY4ODIsImV4cCI6MjA1NjIzMjg4Mn0.Q3BCKZzUZ2oas4qPAj9qCNZekuYmSTDRPRcFrl7Wro4';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-
 export default {
   data() {
     return {
@@ -53,66 +52,62 @@ export default {
         waterTank: null,
         pumpHouse: null,
         dirtyKitchen: null,
-        concreteFence: null,
-      },
+        concreteFence: null
+      } // ✅ No trailing comma here
     };
   },
   methods: {
     async submitPropertiesToBeCovered() {
       try {
-        const propertyData = this.$store.state.property; // Retrieve property data from Vuex store
+        const propertyData = this.$store.state.property;
         if (!propertyData || !propertyData.propertydescription_id) { 
           alert("Property description not found. Please fill out the previous form first.");
           return;
         }
 
-        // Prepare data for insertion
         const propertiesToBeCoveredData = {
           ...this.properties,
-          propertydescription_id: propertyData.propertydescription_id, // Use the correct column name
+          propertydescription_id: propertyData.propertydescription_id
         };
 
-        // Insert data into Supabase
         const { data, error } = await supabase
-            .from('PropertiesToBeCovered')
-            .insert([propertiesToBeCoveredData])
-            .select();
+          .from('PropertiesToBeCovered')
+          .insert([propertiesToBeCoveredData])
+          .select();
 
-            if (error) {
-            console.error('Error inserting properties to be covered data:', error);
-            alert('Error submitting properties to be covered form.');
-            } else {
-            console.log('Properties to be covered data inserted successfully:', data);
-
-            if (data && data.length > 0) {
-                this.$store.dispatch('saveProperty', { propertiestobecovered_id: data[0].propertiestobecovered_id });
-                this.$router.push('/offered-packages');
-            }
-            }
-
-          // Reset form after successful submission
-          this.properties = {
-            buildingImprovements: null,
-            householdContents: null,
-            swimmingPool: null,
-            gazebo: null,
-            waterTank: null,
-            pumpHouse: null,
-            dirtyKitchen: null,
-            concreteFence: null,
-          };
-
-          // Navigate to the next page (if applicable)
-          this.$router.push('/next-form'); // Update with the correct next page route
+        if (error) {
+          console.error('Error inserting properties:', error);
+          alert('Error submitting form.');
+          return;
         }
+
+        console.log('Data inserted:', data);
+        if (data && data.length > 0) {
+          this.$store.dispatch('saveProperty', { propertiestobecovered_id: data[0].propertiestobecovered_id });
+        }
+
+        this.properties = {
+          buildingImprovements: null,
+          householdContents: null,
+          swimmingPool: null,
+          gazebo: null,
+          waterTank: null,
+          pumpHouse: null,
+          dirtyKitchen: null,
+          concreteFence: null
+        };
+
+        this.$router.push('/offered-packages'); // ✅ Ensure correct routing
+
       } catch (error) {
         console.error('Unexpected error:', error);
         alert('An unexpected error occurred. Please try again.');
       }
-    },
-  },
-};
+    }
+  } // ✅ Ensure the closing bracket is correct
+}; // ✅ Make sure there's no extra comma or unexpected semicolon here
 </script>
+
 
 <style scoped>
 .section {

@@ -84,12 +84,15 @@ export default {
             condoname: this.property.condoname, // Match DB column name exactly    // ✅ Match DB column
             client_id: this.client.client_id
           }])
-          .select();
+          .select('id');
+          .single();
 
         if (error) throw error;
         if (!data || data.length === 0) {
           throw new Error('No data returned from Supabase.');
         }
+
+        this.store.commit('setProperty', data);
 
         alert('Property data saved!');
         this.router.push('/property-description'); // ✅ Navigate

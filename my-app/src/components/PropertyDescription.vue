@@ -268,17 +268,29 @@ export default {
     },
     async submitPropertyDescription() {
       try {
-        const clientData = this.$store.state.client;
-        const propertyInformationData = this.$store.state.property;
+        let clientData = this.$store.state.client;
+        let propertyInformationData = this.$store.state.property;
 
         if (!clientData?.client_id) {
           alert('Error: Client information is missing. Please complete the client form first.');
           return;
         }
 
+        // Fetch property information if missing
         if (!propertyInformationData?.id) {
-          alert('Error: Property information is missing. Please fill out the property information form first.');
-          return;
+          const { data: latestProperty, error: fetchError } = await supabase
+            .from('propertyinformation')
+            .select('id')
+            .eq('client_id', clientData.client_id)
+            .single();
+
+          if (fetchError || !latestProperty) {
+            alert('Error: Property information is missing. Please fill out the property information form first.');
+            return;
+          }
+
+          this.$store.commit('setProperty', latestProperty);
+          propertyInformationData = latestProperty;
         }
 
         const propertyDescriptionData = {
@@ -338,6 +350,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style scoped>

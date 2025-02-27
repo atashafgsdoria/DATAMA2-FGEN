@@ -272,13 +272,13 @@ export default {
         const propertyInformationData = this.$store.state.property;
 
         if (!clientData?.client_id) {
-          alert('Client data not found. Please fill out the client form first.');
+          alert('Error: Client information is missing. Please complete the client form first.');
           return;
         }
 
-        if(!propertyInformationData?.id){
-            alert('Property Information not found. Please fill out property information form first.');
-            return;
+        if (!propertyInformationData?.id) {
+          alert('Error: Property information is missing. Please fill out the property information form first.');
+          return;
         }
 
         const propertyDescriptionData = {
@@ -286,48 +286,47 @@ export default {
           propertyinformation_id: propertyInformationData.id,
         };
 
-        const { data, error } = await supabase
-            .from('propertydescription')
-            .insert([{
-                propertyinformation_id: propertyDescriptionData.propertyinformation_id,
-                noOfStorey: propertyDescriptionData.noOfStorey,
-                yearBuilt: propertyDescriptionData.yearBuilt,
-                floorArea: propertyDescriptionData.floorArea,
-                roofing: propertyDescriptionData.roofing,
-                roofingOther: propertyDescriptionData.roofingOther,
-                occupancy: propertyDescriptionData.occupancy,
-                occupancyOther: propertyDescriptionData.occupancyOther,
-                numberOfTenants: propertyDescriptionData.numberOfTenants,
-                typeOfConstruction: propertyDescriptionData.typeOfConstruction,
-                boundaryfront: propertyDescriptionData.boundaryFront,
-                boundaryright: propertyDescriptionData.boundaryRight,
-                boundaryleft: propertyDescriptionData.boundaryLeft,
-                boundaryrear: propertyDescriptionData.boundaryRear,
-                loccongestedarea: propertyDescriptionData.locCongestedArea,
-                loccongestedareaDetails: propertyDescriptionData.locCongestedAreaDetails,
-                locExplosive: propertyDescriptionData.locExplosive,
-                locExplosiveDetails: propertyDescriptionData.locExplosiveDetails,
-                locFloodProne: propertyDescriptionData.locFloodProne,
-                locFloodProneDetails: propertyDescriptionData.locFloodProneDetails,
-                fireLoss: propertyDescriptionData.fireLoss,
-                fireLossDate: propertyDescriptionData.fireLossDate,
-                policyCancelled: propertyDescriptionData.policyCancelled,
-                policyCancelledCompany: propertyDescriptionData.policyCancelledCompany,
-                policyCancelledDate: propertyDescriptionData.policyCancelledDate,
-                riskDeclined: propertyDescriptionData.riskDeclined,
-                riskDeclinedCompany: propertyDescriptionData.riskDeclinedCompany,
-                riskDeclinedDate: propertyDescriptionData.riskDeclinedDate
-            }])
-            .select();
+        const { error } = await supabase.from('propertydescription').insert([
+          {
+            propertyinformation_id: propertyDescriptionData.propertyinformation_id,
+            no_of_storey: propertyDescriptionData.noOfStorey,
+            year_built: propertyDescriptionData.yearBuilt,
+            floor_area: propertyDescriptionData.floorArea,
+            roofing: propertyDescriptionData.roofing,
+            roofing_other: propertyDescriptionData.roofingOther,
+            occupancy: propertyDescriptionData.occupancy,
+            occupancy_other: propertyDescriptionData.occupancyOther,
+            number_of_tenants: propertyDescriptionData.numberOfTenants,
+            type_of_construction: propertyDescriptionData.typeOfConstruction,
+            boundary_front: propertyDescriptionData.boundaryFront,
+            boundary_right: propertyDescriptionData.boundaryRight,
+            boundary_left: propertyDescriptionData.boundaryLeft,
+            boundary_rear: propertyDescriptionData.boundaryRear,
+            loc_congested_area: propertyDescriptionData.locCongestedArea,
+            loc_congested_area_details: propertyDescriptionData.locCongestedAreaDetails,
+            loc_explosive: propertyDescriptionData.locExplosive,
+            loc_explosive_details: propertyDescriptionData.locExplosiveDetails,
+            loc_flood_prone: propertyDescriptionData.locFloodProne,
+            loc_flood_prone_details: propertyDescriptionData.locFloodProneDetails,
+            fire_loss: propertyDescriptionData.fireLoss,
+            fire_loss_date: propertyDescriptionData.fireLossDate,
+            policy_cancelled: propertyDescriptionData.policyCancelled,
+            policy_cancelled_company: propertyDescriptionData.policyCancelledCompany,
+            policy_cancelled_date: propertyDescriptionData.policyCancelledDate,
+            risk_declined: propertyDescriptionData.riskDeclined,
+            risk_declined_company: propertyDescriptionData.riskDeclinedCompany,
+            risk_declined_date: propertyDescriptionData.riskDeclinedDate,
+          },
+        ]);
 
         if (error) {
-          console.error('Error inserting property description data:', error);
-          alert(`Error submitting form: ${error.message}`);
+          console.error('Error inserting property description:', error);
+          alert(`Submission failed: ${error.message}`);
           return;
         }
 
-        console.log('Property description inserted successfully:', data);
-        alert('Property description submitted successfully!');
+        console.log('Property description submitted successfully.');
+        alert('Property description saved successfully!');
 
         // Reset form fields
         this.property = this.getDefaultPropertyState();
@@ -339,6 +338,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .section {

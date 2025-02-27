@@ -209,13 +209,13 @@ export default {
   methods: {
     getDefaultPropertyState() {
       return {
-        noOfStorey: null,
-        yearBuilt: null,
-        floorArea: null,
+        no_of_storey: null,
+        year_built: null,
+        floor_area: null,
         roofing: 'galvanized-iron',
-        roofingOther: '',
+        roofing_other: '',
         occupancy: 'office',
-        occupancyOther: '',
+        occupancy_other: '',
         numberOfTenants: null,
         typeOfConstruction: 'class-a',
         boundaryFront: null,
@@ -277,8 +277,39 @@ export default {
         };
 
         const { data, error } = await supabase
-          .from('PropertyDescriptions') // Use the correct table name
-          .insert([propertyDescriptionData]);
+            .from('propertydescription') // ✅ Corrected table name (singular)
+            .insert([{
+                propertyinformation_id: this.property.propertyinformation_id, // ✅ Ensure this ID exists
+                noOfStorey: this.property.noOfStorey,
+                yearBuilt: this.property.yearBuilt,
+                floorArea: this.property.floorArea,
+                roofing: this.property.roofing,
+                roofingOther: this.property.roofingOther,
+                occupancy: this.property.occupancy,
+                occupancyOther: this.property.occupancyOther,
+                numberOfTenants: this.property.numberOfTenants,
+                typeOfConstruction: this.property.typeOfConstruction,
+                boundaryfront: this.property.boundaryFront,
+                boundaryright: this.property.boundaryRight,
+                boundaryleft: this.property.boundaryLeft,
+                boundaryrear: this.property.boundaryRear,
+                loccongestedarea: this.property.locCongestedArea,
+                loccongestedareaDetails: this.property.locCongestedAreaDetails,
+                locExplosive: this.property.locExplosive,
+                locExplosiveDetails: this.property.locExplosiveDetails,
+                locFloodProne: this.property.locFloodProne,
+                locFloodProneDetails: this.property.locFloodProneDetails,
+                fireLoss: this.property.fireLoss,
+                fireLossDate: this.property.fireLossDate,
+                policyCancelled: this.property.policyCancelled,
+                policyCancelledCompany: this.property.policyCancelledCompany,
+                policyCancelledDate: this.property.policyCancelledDate,
+                riskDeclined: this.property.riskDeclined,
+                riskDeclinedCompany: this.property.riskDeclinedCompany,
+                riskDeclinedDate: this.property.riskDeclinedDate
+            }])
+            .select(); // ✅ Returns inserted data for debugging
+
 
         if (error) {
           console.error('Error inserting property description data:', error);

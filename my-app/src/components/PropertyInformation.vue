@@ -22,8 +22,8 @@
         <label for="barangay">Barangay:</label>
         <input v-model="property.barangay" type="text" id="barangay" required>
 
-        <label for="village_name">Village Name:</label>
-        <input v-model="property.village_name" type="text" id="village_name">
+        <label for="villagename">Village Name:</label>
+        <input v-model="property.villagename" type="text" id="villagename">
 
         <label for="condoname">Condo Name:</label>
         <input v-model="property.condoname" type="text" id="condoname">
@@ -58,7 +58,7 @@ export default {
         province: '',
         city: '',
         barangay: '',
-        village_name: '', // ✅ Match lowercase column name in DB
+        villagename: '', // ✅ Match lowercase column name in DB
         condoname: '',   // ✅ Match lowercase column name in DB
       },
     };
@@ -80,7 +80,7 @@ export default {
             province: this.property.province,
             city: this.property.city,
             barangay: this.property.barangay,
-            village_name: this.property.village_name, // ✅ Match DB column
+            villagename: this.property.villagename, // ✅ Match DB column
             condoname: this.property.condoname, // Match DB column name exactly    // ✅ Match DB column
             client_id: this.client.client_id
           }])

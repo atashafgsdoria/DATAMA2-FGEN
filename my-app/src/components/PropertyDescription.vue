@@ -299,38 +299,38 @@ export default {
         };
 
         // Insert Property Description
-        const { error } = await supabase.from('propertydescription').insert([
-          {
+        const { error } = await supabase.from('propertydescription').insert([{
             propertyinformation_id: propertyDescriptionData.propertyinformation_id,
             no_of_storey: propertyDescriptionData.noOfStorey ?? 0,
-            year_built: propertyDescriptionData.yearBuilt ?? this.currentYear,
+            year_built: Math.min(Math.max(propertyDescriptionData.yearBuilt ?? this.currentYear, 1800), this.currentYear),
             floor_area: propertyDescriptionData.floorArea ?? 0,
-            roofing: propertyDescriptionData.roofing,
-            roofing_other: propertyDescriptionData.roofingOther || null,
-            occupancy: propertyDescriptionData.occupancy,
-            occupancy_other: propertyDescriptionData.occupancyOther || null,
+            roofing: propertyDescriptionData.roofing || 'Unknown',
+            roofing_other: propertyDescriptionData.roofing === 'other' ? propertyDescriptionData.roofingOther || 'Specify other' : null,
+            occupancy: propertyDescriptionData.occupancy || 'Unknown',
+            occupancy_other: ['warehouse', 'industrial-factory'].includes(propertyDescriptionData.occupancy) ? (propertyDescriptionData.occupancyOther || 'Specify other') : null,
             number_of_tenants: propertyDescriptionData.numberOfTenants ?? 0,
-            type_of_construction: propertyDescriptionData.typeOfConstruction,
-            boundary_front: propertyDescriptionData.boundaryFront ?? 0,
-            boundary_right: propertyDescriptionData.boundaryRight ?? 0,
-            boundary_left: propertyDescriptionData.boundaryLeft ?? 0,
-            boundary_rear: propertyDescriptionData.boundaryRear ?? 0,
-            loc_congested_area: propertyDescriptionData.locCongestedArea,
+            type_of_construction: propertyDescriptionData.typeOfConstruction || 'Unknown',
+            boundaryfront: propertyDescriptionData.boundaryFront ?? 0,
+            boundaryright: propertyDescriptionData.boundaryRight ?? 0,
+            boundaryleft: propertyDescriptionData.boundaryLeft ?? 0,
+            boundaryrear: propertyDescriptionData.boundaryRear ?? 0,
+            loc_congested_area: ['yes', 'no'].includes(propertyDescriptionData.locCongestedArea) ? propertyDescriptionData.locCongestedArea : 'no',
             loc_congested_area_details: propertyDescriptionData.locCongestedAreaDetails || null,
-            loc_explosive: propertyDescriptionData.locExplosive,
+            loc_explosive: ['yes', 'no'].includes(propertyDescriptionData.locExplosive) ? propertyDescriptionData.locExplosive : 'no',
             loc_explosive_details: propertyDescriptionData.locExplosiveDetails || null,
-            loc_flood_prone: propertyDescriptionData.locFloodProne,
+            loc_flood_prone: ['yes', 'no'].includes(propertyDescriptionData.locFloodProne) ? propertyDescriptionData.locFloodProne : 'no',
             loc_flood_prone_details: propertyDescriptionData.locFloodProneDetails || null,
-            fire_loss: propertyDescriptionData.fireLoss,
+            fire_loss: ['yes', 'no'].includes(propertyDescriptionData.fireLoss) ? propertyDescriptionData.fireLoss : 'no',
             fire_loss_date: propertyDescriptionData.fireLossDate || null,
-            policy_cancelled: propertyDescriptionData.policyCancelled,
+            policy_cancelled: ['yes', 'no'].includes(propertyDescriptionData.policyCancelled) ? propertyDescriptionData.policyCancelled : 'no',
             policy_cancelled_company: propertyDescriptionData.policyCancelledCompany || null,
             policy_cancelled_date: propertyDescriptionData.policyCancelledDate || null,
-            risk_declined: propertyDescriptionData.riskDeclined,
+            risk_declined: ['yes', 'no'].includes(propertyDescriptionData.riskDeclined) ? propertyDescriptionData.riskDeclined : 'no',
             risk_declined_company: propertyDescriptionData.riskDeclinedCompany || null,
             risk_declined_date: propertyDescriptionData.riskDeclinedDate || null,
-          },
+        },
         ]);
+
 
         if (error) {
           console.error('Error inserting property description:', error);

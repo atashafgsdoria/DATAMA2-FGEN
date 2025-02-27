@@ -39,6 +39,16 @@ import { useRouter } from 'vue-router';
 import supabase from '@/supabase';
 
 export default {
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    return {
+      store,
+      router,
+      client: store.state.client, // ✅ Access client data from Vuex
+    };
+  },
   data() {
     return {
       property: {
@@ -48,15 +58,10 @@ export default {
         province: '',
         city: '',
         barangay: '',
-        villagename: '',
-        condoname: '',
+        villagename: '', // ✅ Match lowercase column name in DB
+        condoname: '',   // ✅ Match lowercase column name in DB
       },
     };
-  },
-  computed: {
-    client() {
-      return this.$store.state.client; // ✅ Get client data correctly
-    },
   },
   methods: {
     async submitPropertyForm() {
@@ -67,33 +72,33 @@ export default {
 
       try {
         const { data, error } = await supabase
-          .from('propertyinformation')
-          .insert([
-            {
-              address: this.property.address,
-              country: this.property.country,
-              region: this.property.region,
-              province: this.property.province,
-              city: this.property.city,
-              barangay: this.property.barangay,
-              villagename: this.property.villagename,
-              condoname: this.property.condoname,
-              client_id: this.client.client_id,
-            },
-          ])
-          .select('id') // ✅ Ensure we get the inserted ID
-          .single();
+          .from('propertyinformation') // ✅ Use lowercase table name
+          .insert([{
+            address: this.property.address,
+            country: this.property.country,
+            region: this.property.region,
+            province: this.property.province,
+            city: this.property.city,
+            barangay: this.property.barangay,
+            villagename: this.property.villagename, // ✅ Match DB column
+            condoname: this.property.condoname, // Match DB column name exactly    // ✅ Match DB column
+            client_id: this.client.client_id
+          }])
+          .select(*);
 
         if (error) throw error;
-        if (!data || !data.id) {
-          throw new Error('No ID returned from Supabase.');
+        if (!data || data.length === 0) {
+          throw new Error('No data returned from Supabase.');
         }
 
-        // ✅ Store the property in Vuex
-        this.$store.commit('setProperty', data);
+        const propertyinformation_id = data[0].propertyinformation_id; // ✅ Get the inserted ID
 
         alert('Property data saved!');
-        this.$router.push('/property-description'); // ✅ Navigate AFTER storing in Vuex
+        this.router.push({
+          path: '/property-description',
+          query: { propertyinformation_id } // ✅ Pass it to the next page
+        });
+
       } catch (error) {
         console.error('Error:', error);
         alert('Submission failed: ' + (error.message || 'Unknown error'));
@@ -102,7 +107,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .section {

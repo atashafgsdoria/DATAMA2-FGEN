@@ -277,10 +277,10 @@ export default {
         }
 
         // Fetch property information if missing
-        if (!propertyInformationData?.id) {
+        if (!propertyInformationData?.propertyinformation_id) {
           const { data: latestProperty, error: fetchError } = await supabase
             .from('propertyinformation')
-            .select('id')
+            .select('propertyinformation_id')
             .eq('client_id', clientData.client_id)
             .single();
 
@@ -295,39 +295,40 @@ export default {
 
         const propertyDescriptionData = {
           ...this.property,
-          propertyinformation_id: propertyInformationData.id,
+          propertyinformation_id: propertyInformationData.propertyinformation_id,
         };
 
+        // Insert Property Description
         const { error } = await supabase.from('propertydescription').insert([
           {
             propertyinformation_id: propertyDescriptionData.propertyinformation_id,
-            no_of_storey: propertyDescriptionData.noOfStorey,
-            year_built: propertyDescriptionData.yearBuilt,
-            floor_area: propertyDescriptionData.floorArea,
+            no_of_storey: propertyDescriptionData.noOfStorey ?? 0,  // Ensure numeric values default to 0
+            year_built: propertyDescriptionData.yearBuilt ?? this.currentYear,
+            floor_area: propertyDescriptionData.floorArea ?? 0,
             roofing: propertyDescriptionData.roofing,
-            roofing_other: propertyDescriptionData.roofingOther,
+            roofing_other: propertyDescriptionData.roofingOther || null,
             occupancy: propertyDescriptionData.occupancy,
-            occupancy_other: propertyDescriptionData.occupancyOther,
-            number_of_tenants: propertyDescriptionData.numberOfTenants,
+            occupancy_other: propertyDescriptionData.occupancyOther || null,
+            number_of_tenants: propertyDescriptionData.numberOfTenants ?? 0,
             type_of_construction: propertyDescriptionData.typeOfConstruction,
-            boundary_front: propertyDescriptionData.boundaryFront,
-            boundary_right: propertyDescriptionData.boundaryRight,
-            boundary_left: propertyDescriptionData.boundaryLeft,
-            boundary_rear: propertyDescriptionData.boundaryRear,
+            boundary_front: propertyDescriptionData.boundaryFront ?? 0,
+            boundary_right: propertyDescriptionData.boundaryRight ?? 0,
+            boundary_left: propertyDescriptionData.boundaryLeft ?? 0,
+            boundary_rear: propertyDescriptionData.boundaryRear ?? 0,
             loc_congested_area: propertyDescriptionData.locCongestedArea,
-            loc_congested_area_details: propertyDescriptionData.locCongestedAreaDetails,
+            loc_congested_area_details: propertyDescriptionData.locCongestedAreaDetails || null,
             loc_explosive: propertyDescriptionData.locExplosive,
-            loc_explosive_details: propertyDescriptionData.locExplosiveDetails,
+            loc_explosive_details: propertyDescriptionData.locExplosiveDetails || null,
             loc_flood_prone: propertyDescriptionData.locFloodProne,
-            loc_flood_prone_details: propertyDescriptionData.locFloodProneDetails,
+            loc_flood_prone_details: propertyDescriptionData.locFloodProneDetails || null,
             fire_loss: propertyDescriptionData.fireLoss,
-            fire_loss_date: propertyDescriptionData.fireLossDate,
+            fire_loss_date: propertyDescriptionData.fireLossDate || null,
             policy_cancelled: propertyDescriptionData.policyCancelled,
-            policy_cancelled_company: propertyDescriptionData.policyCancelledCompany,
-            policy_cancelled_date: propertyDescriptionData.policyCancelledDate,
+            policy_cancelled_company: propertyDescriptionData.policyCancelledCompany || null,
+            policy_cancelled_date: propertyDescriptionData.policyCancelledDate || null,
             risk_declined: propertyDescriptionData.riskDeclined,
-            risk_declined_company: propertyDescriptionData.riskDeclinedCompany,
-            risk_declined_date: propertyDescriptionData.riskDeclinedDate,
+            risk_declined_company: propertyDescriptionData.riskDeclinedCompany || null,
+            risk_declined_date: propertyDescriptionData.riskDeclinedDate || null,
           },
         ]);
 
@@ -350,6 +351,7 @@ export default {
   },
 };
 </script>
+
 
 
 

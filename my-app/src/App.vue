@@ -1,10 +1,9 @@
 <script setup>
-import ClientForm from './components/ClientForm.vue'; // Make sure this file exists
 </script>
 
 <template>
   <main>
-    <ClientForm />
+    <router-view /> <!-- ✅ This allows navigation between pages -->
   </main>
 </template>
 

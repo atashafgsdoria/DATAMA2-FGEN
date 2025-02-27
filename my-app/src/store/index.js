@@ -2,16 +2,16 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    client: null,
+    client: {}, // ✅ Ensure this exists
   },
   mutations: {
     setClient(state, client) {
       state.client = client;
-    },
+    }
   },
   actions: {
     saveClient({ commit }, client) {
       commit('setClient', client);
-    },
-  },
+    }
+  }
 });

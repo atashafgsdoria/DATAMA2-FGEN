@@ -43,8 +43,9 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'; // ✅ Correct Vuex import
-import supabase from '@/supabase'; // ✅ Use shared Supabase instance
+import { mapActions } from 'vuex'; // ✅ Import Vuex actions
+import supabase from '@/supabase'; // ✅ Import Supabase instance
+import { useRouter } from 'vue-router';
 
 export default {
   data() {
@@ -61,33 +62,47 @@ export default {
         residentialTelephone: '',
         officeTelephone: '',
       },
-      legalAge: 18,
+      legalAge: 18, // ✅ Set legal age for validation
     };
   },
   computed: {
     legalAgeDate() {
+      // ✅ Calculate legal age date limit
       const today = new Date();
-      return new Date(today.setFullYear(today.getFullYear() - this.legalAge)).toISOString().split('T')[0];
+      return new Date(today.setFullYear(today.getFullYear() - this.legalAge))
+        .toISOString()
+        .split('T')[0];
     },
   },
+  setup() {
+    const router = useRouter(); // ✅ Correct Vue Router usage
+    return { router };
+  },
   methods: {
-    ...mapActions(['saveClient']), // ✅ Ensure Vuex store action exists
+    ...mapActions(['saveClient']), // ✅ Map Vuex store action
 
     async submitForm() {
       if (!this.validateForm()) {
-        alert("Please fill in all required fields correctly.");
+        alert('Please fill in all required fields correctly.');
         return;
       }
 
       try {
-        const { data, error } = await supabase.from('Clients').insert([this.client]).select();
+        const { data, error } = await supabase
+          .from('Client') // ✅ Ensure correct table name (case-sensitive)
+          .insert([this.client])
+          .select();
+
         if (error) throw error;
+        if (!data || data.length === 0) {
+          throw new Error('No data returned from Supabase.');
+        }
 
         const savedClient = data[0];
         this.saveClient(savedClient); // ✅ Save client in Vuex store
 
         alert('Form submitted successfully!');
-        this.$router.push('/property-information');
+        this.router.push('/property-information'); // ✅ Corrected navigation
       } catch (error) {
         console.error('Error:', error);
         alert('Error submitting form: ' + error.message);
@@ -95,17 +110,20 @@ export default {
     },
 
     validateForm() {
-      // Ensure required fields are filled
-      return this.client.lastName && 
-             this.client.givenName && 
-             this.client.dob && 
-             this.client.interestOnProperty && 
-             this.client.phoneNumber.match(/^\d{11}$/) && 
-             this.client.email;
+      // ✅ Ensure required fields are filled
+      return (
+        this.client.lastName &&
+        this.client.givenName &&
+        this.client.dob &&
+        this.client.interestOnProperty &&
+        /^\d{11}$/.test(this.client.phoneNumber) && // ✅ Validates 11-digit phone number
+        this.client.email.includes('@')
+      );
     },
   },
 };
 </script>
+
 
 <style scoped>
 .section {

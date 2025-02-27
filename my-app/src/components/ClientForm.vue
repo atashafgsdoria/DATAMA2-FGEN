@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import { createClient } from '@supabase/supabase-js';
-import { mapActions } from 'vuex'; // ✅ Fix: Import mapActions
+import { mapActions } from 'vuex'; // ✅ Correct Vuex import
+import supabase from '@/supabase'; // ✅ Use shared Supabase instance
 
 export default {
   data() {
@@ -71,15 +71,20 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['saveClient']), // ✅ Now properly imported
+    ...mapActions(['saveClient']), // ✅ Ensure Vuex store action exists
 
     async submitForm() {
+      if (!this.validateForm()) {
+        alert("Please fill in all required fields correctly.");
+        return;
+      }
+
       try {
         const { data, error } = await supabase.from('Clients').insert([this.client]).select();
         if (error) throw error;
 
         const savedClient = data[0];
-        this.saveClient(savedClient); // Save client in Vuex store
+        this.saveClient(savedClient); // ✅ Save client in Vuex store
 
         alert('Form submitted successfully!');
         this.$router.push('/property-information');
@@ -87,6 +92,16 @@ export default {
         console.error('Error:', error);
         alert('Error submitting form: ' + error.message);
       }
+    },
+
+    validateForm() {
+      // Ensure required fields are filled
+      return this.client.lastName && 
+             this.client.givenName && 
+             this.client.dob && 
+             this.client.interestOnProperty && 
+             this.client.phoneNumber.match(/^\d{11}$/) && 
+             this.client.email;
     },
   },
 };

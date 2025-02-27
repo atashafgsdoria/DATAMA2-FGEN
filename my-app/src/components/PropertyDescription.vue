@@ -193,103 +193,22 @@
 </template>
 
 <script>
-import { createClient } from '@supabase/supabase-js';
-
+import supabase from '@/supabase';
 
 export default {
   data() {
     return {
-      property: {
-        noOfStorey: null,
-        yearBuilt: null,
-        floorArea: null,
-        roofing: 'galvanized-iron',
-        roofingOther: '',
-        occupancy: 'office',
-        occupancyOther: '',
-        numberOfTenants: null,
-        typeOfConstruction: 'class-a',
-        boundaryFront: null,
-        boundaryRight: null,
-        boundaryLeft: null,
-        boundaryRear: null,
-        locCongestedArea: 'no',
-        locCongestedAreaDetails: '',
-        locExplosive: 'no',
-        locExplosiveDetails: '',
-        locFloodProne: 'no',
-        locFloodProneDetails: '',
-        fireLoss: 'no',
-        fireLossDate: null,
-        policyCancelled: 'no',
-        policyCancelledCompany: '',
-        policyCancelledDate: null,
-        riskDeclined: 'no',
-        riskDeclinedCompany: '',
-        riskDeclinedDate: null,
-      },
+      property: this.getDefaultPropertyState(),
     };
   },
   computed: {
-        currentYear() {
-            return new Date().getFullYear();
-        }
+    currentYear() {
+      return new Date().getFullYear();
     },
+  },
   methods: {
-    toggleOtherField(fieldName) {
-      if (fieldName === 'roofing' && this.property.roofing !== 'other') {
-        this.property.roofingOther = '';
-      }
-      if (fieldName === 'occupancy' && this.property.occupancy !== 'warehouse' && this.property.occupancy !== 'industrial-factory') {
-        this.property.occupancyOther = '';
-      }
-    },
-    toggleInfo(fieldName) {
-        if (this.property[fieldName] === 'no') {
-            this.property[fieldName + 'Details'] = '';
-        }
-        if (fieldName === 'fireLoss') {
-            this.property.fireLossDate = null;
-        }
-    },
-    toggleInfo(fieldName) {
-      if (this.property[fieldName] === 'no') {
-        this.property[fieldName + 'Details'] = '';
-      }
-    },
-    toggleInput(fieldName) {
-        if (this.property[fieldName] === 'no') {
-            this.property[fieldName + 'Date'] = null;
-            if (['policyCancelled', 'riskDeclined'].includes(fieldName)) {
-            this.property[fieldName + 'Company'] = '';
-            }
-        }
-    },
-      async submitPropertyDescription() {
-      try {
-        const clientData = this.$store.state.client;
-        if (!clientData || !clientData.client_id) {
-          alert("Client data not found. Please fill out client form first.");
-          return;
-        }
-
-        const propertyDescriptionData = {
-          ...this.property,
-          client_id: clientData.client_id,
-        };
-
-        const { data, error } = await supabase
-          .from('PropertyDescription')
-          .insert([propertyDescriptionData]);
-
-        if (error) {
-          console.error('Error inserting property description data:', error);
-          alert('Error submitting property description form.');
-        } else {
-          console.log('Property description data inserted successfully:', data);
-          alert('Property description form submitted successfully!');
-
-          this.property = {
+    getDefaultPropertyState() {
+      return {
         noOfStorey: null,
         yearBuilt: null,
         floorArea: null,
@@ -318,7 +237,60 @@ export default {
         riskDeclinedCompany: '',
         riskDeclinedDate: null,
       };
+    },
+    toggleOtherField(fieldName) {
+      if (fieldName === 'roofing' && this.property.roofing !== 'other') {
+        this.property.roofingOther = '';
+      }
+      if (fieldName === 'occupancy' && !['warehouse', 'industrial-factory'].includes(this.property.occupancy)) {
+        this.property.occupancyOther = '';
+      }
+    },
+    toggleInfo(fieldName) {
+      if (this.property[fieldName] === 'no') {
+        this.property[`${fieldName}Details`] = '';
+      }
+      if (fieldName === 'fireLoss') {
+        this.property.fireLossDate = null;
+      }
+    },
+    toggleInput(fieldName) {
+      if (this.property[fieldName] === 'no') {
+        this.property[`${fieldName}Date`] = null;
+        if (['policyCancelled', 'riskDeclined'].includes(fieldName)) {
+          this.property[`${fieldName}Company`] = '';
         }
+      }
+    },
+    async submitPropertyDescription() {
+      try {
+        const clientData = this.$store.state.client;
+
+        if (!clientData?.client_id) {
+          alert('Client data not found. Please fill out the client form first.');
+          return;
+        }
+
+        const propertyDescriptionData = {
+          ...this.property,
+          client_id: clientData.client_id,
+        };
+
+        const { data, error } = await supabase
+          .from('PropertyDescriptions') // Use the correct table name
+          .insert([propertyDescriptionData]);
+
+        if (error) {
+          console.error('Error inserting property description data:', error);
+          alert(`Error submitting form: ${error.message}`);
+          return;
+        }
+
+        console.log('Property description inserted successfully:', data);
+        alert('Property description submitted successfully!');
+
+        // Reset form fields
+        this.property = this.getDefaultPropertyState();
       } catch (error) {
         console.error('Unexpected error:', error);
         alert('An unexpected error occurred.');
@@ -327,6 +299,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .section {

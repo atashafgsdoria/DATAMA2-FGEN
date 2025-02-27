@@ -44,7 +44,7 @@
 
 <script>
 import { createClient } from '@supabase/supabase-js';
-
+import { mapActions } from 'vuex'; // ✅ Fix: Import mapActions
 
 export default {
   data() {
@@ -71,7 +71,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['saveClient']), // Vuex action to store client data
+    ...mapActions(['saveClient']), // ✅ Now properly imported
 
     async submitForm() {
       try {

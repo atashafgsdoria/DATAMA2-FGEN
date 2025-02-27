@@ -130,7 +130,7 @@
       <label><b>Other Property Information:</b></label><br><br>
 
       <label for="loc-congested-area">Is the property located in a congested area?</label>
-      <select v-model="property.locCongestedArea" id="loc-congested-area" name="loc-congested-area" required @change="toggleInfo('loc-congested-area')">
+      <select v-model="property.locCongestedArea" id="loc-congested-area" name="loc-congested-area" required @change="toggleInfo('locCongestedArea')">
         <option value="yes">Yes</option>
         <option value="no">No</option>
       </select><br><br>
@@ -140,7 +140,7 @@
       </div>
 
       <label for="loc-explosive">Does the property have explosives?</label>
-      <select v-model="property.locExplosive" id="loc-explosive" name="loc-explosive" required @change="toggleInfo('loc-explosive')">
+      <select v-model="property.locExplosive" id="loc-explosive" name="loc-explosive" required @change="toggleInfo('locExplosive')">
         <option value="yes">Yes</option>
         <option value="no">No</option>
       </select><br><br>
@@ -150,10 +150,14 @@
       </div>
 
       <label for="loc-flood-prone">Is the property located in a flood-prone area?</label>
-      <select v-model="property.locFloodProne" id="loc-flood-prone" name="loc-flood-prone" required @change="toggleInfo('loc-flood-prone')">
-        <option value="yes">Yes</option>
+      <select v-model="property.locFloodProne" id="loc-flood-prone" name="loc-flood-prone" required @change="toggleInfo('locFloodProne')">
+      <option value="yes">Yes</option>
         <option value="no">No</option>
       </select><br><br>
+      <div id="loc-flood-prone-info" :style="{ display: property.locFloodProne === 'yes' ? 'block' : 'none' }">
+        <label for="loc-flood-prone-details">Please provide details:</label>
+        <input v-model="property.locFloodProneDetails" type="text" id="loc-flood-prone-details" name="loc-flood-prone-details"><br><br>
+      </div>
 
       <label for="fire-loss">Has the property experienced fire loss?</label>
         <select v-model="property.fireLoss" id="fire-loss" name="fire-loss" required @change="toggleInfo('fireLoss')">
@@ -167,7 +171,7 @@
       </div>
 
       <label for="policy-cancelled">Have you ever had a policy of fire insurance cancelled?</label>
-      <select v-model="property.policyCancelled" id="policy-cancelled" name="policy-cancelled" required @change="toggleInput('policy-cancelled')">
+      <select v-model="property.policyCancelled" id="policy-cancelled" name="policy-cancelled" required @change="toggleInput('policyCancelled')">
         <option value="no">No</option>
         <option value="yes">Yes</option>
       </select><br><br>
@@ -178,7 +182,7 @@
       </div>
 
       <label for="risk-declined">Have you ever had this risk declined by any other company?</label>
-      <select v-model="property.riskDeclined" id="risk-declined" name="risk-declined" required @change="toggleInput('risk-declined')">
+      <select v-model="property.riskDeclined" id="risk-declined" name="risk-declined" required @change="toggleInput('riskDeclined')">
         <option value="no">No</option>
         <option value="yes">Yes</option>
       </select><br><br>
@@ -209,13 +213,13 @@ export default {
   methods: {
     getDefaultPropertyState() {
       return {
-        no_of_storey: null,
-        year_built: null,
-        floor_area: null,
+        noOfStorey: null,
+        yearBuilt: null,
+        floorArea: null,
         roofing: 'galvanized-iron',
-        roofing_other: '',
+        roofingOther: '',
         occupancy: 'office',
-        occupancy_other: '',
+        occupancyOther: '',
         numberOfTenants: null,
         typeOfConstruction: 'class-a',
         boundaryFront: null,
@@ -265,51 +269,56 @@ export default {
     async submitPropertyDescription() {
       try {
         const clientData = this.$store.state.client;
+        const propertyInformationData = this.$store.state.property;
 
         if (!clientData?.client_id) {
           alert('Client data not found. Please fill out the client form first.');
           return;
         }
 
+        if(!propertyInformationData?.id){
+            alert('Property Information not found. Please fill out property information form first.');
+            return;
+        }
+
         const propertyDescriptionData = {
           ...this.property,
-          client_id: clientData.client_id,
+          propertyinformation_id: propertyInformationData.id,
         };
 
         const { data, error } = await supabase
-            .from('propertydescription') // ✅ Corrected table name (singular)
+            .from('propertydescription')
             .insert([{
-                propertyinformation_id: this.property.propertyinformation_id, // ✅ Ensure this ID exists
-                noOfStorey: this.property.noOfStorey,
-                yearBuilt: this.property.yearBuilt,
-                floorArea: this.property.floorArea,
-                roofing: this.property.roofing,
-                roofingOther: this.property.roofingOther,
-                occupancy: this.property.occupancy,
-                occupancyOther: this.property.occupancyOther,
-                numberOfTenants: this.property.numberOfTenants,
-                typeOfConstruction: this.property.typeOfConstruction,
-                boundaryfront: this.property.boundaryFront,
-                boundaryright: this.property.boundaryRight,
-                boundaryleft: this.property.boundaryLeft,
-                boundaryrear: this.property.boundaryRear,
-                loccongestedarea: this.property.locCongestedArea,
-                loccongestedareaDetails: this.property.locCongestedAreaDetails,
-                locExplosive: this.property.locExplosive,
-                locExplosiveDetails: this.property.locExplosiveDetails,
-                locFloodProne: this.property.locFloodProne,
-                locFloodProneDetails: this.property.locFloodProneDetails,
-                fireLoss: this.property.fireLoss,
-                fireLossDate: this.property.fireLossDate,
-                policyCancelled: this.property.policyCancelled,
-                policyCancelledCompany: this.property.policyCancelledCompany,
-                policyCancelledDate: this.property.policyCancelledDate,
-                riskDeclined: this.property.riskDeclined,
-                riskDeclinedCompany: this.property.riskDeclinedCompany,
-                riskDeclinedDate: this.property.riskDeclinedDate
+                propertyinformation_id: propertyDescriptionData.propertyinformation_id,
+                noOfStorey: propertyDescriptionData.noOfStorey,
+                yearBuilt: propertyDescriptionData.yearBuilt,
+                floorArea: propertyDescriptionData.floorArea,
+                roofing: propertyDescriptionData.roofing,
+                roofingOther: propertyDescriptionData.roofingOther,
+                occupancy: propertyDescriptionData.occupancy,
+                occupancyOther: propertyDescriptionData.occupancyOther,
+                numberOfTenants: propertyDescriptionData.numberOfTenants,
+                typeOfConstruction: propertyDescriptionData.typeOfConstruction,
+                boundaryfront: propertyDescriptionData.boundaryFront,
+                boundaryright: propertyDescriptionData.boundaryRight,
+                boundaryleft: propertyDescriptionData.boundaryLeft,
+                boundaryrear: propertyDescriptionData.boundaryRear,
+                loccongestedarea: propertyDescriptionData.locCongestedArea,
+                loccongestedareaDetails: propertyDescriptionData.locCongestedAreaDetails,
+                locExplosive: propertyDescriptionData.locExplosive,
+                locExplosiveDetails: propertyDescriptionData.locExplosiveDetails,
+                locFloodProne: propertyDescriptionData.locFloodProne,
+                locFloodProneDetails: propertyDescriptionData.locFloodProneDetails,
+                fireLoss: propertyDescriptionData.fireLoss,
+                fireLossDate: propertyDescriptionData.fireLossDate,
+                policyCancelled: propertyDescriptionData.policyCancelled,
+                policyCancelledCompany: propertyDescriptionData.policyCancelledCompany,
+                policyCancelledDate: propertyDescriptionData.policyCancelledDate,
+                riskDeclined: propertyDescriptionData.riskDeclined,
+                riskDeclinedCompany: propertyDescriptionData.riskDeclinedCompany,
+                riskDeclinedDate: propertyDescriptionData.riskDeclinedDate
             }])
-            .select(); // ✅ Returns inserted data for debugging
-
+            .select();
 
         if (error) {
           console.error('Error inserting property description data:', error);
@@ -330,8 +339,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 .section {

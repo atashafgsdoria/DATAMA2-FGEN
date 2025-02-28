@@ -342,7 +342,7 @@ export default {
         alert('Property description saved successfully!');
 
         // Navigate to the next step
-        this.$router.push('/next-step');
+        this.$router.push('/PropertiesToBeCovered');
       } catch (error) {
         console.error('Unexpected error:', error);
         alert('An unexpected error occurred. Please try again.');

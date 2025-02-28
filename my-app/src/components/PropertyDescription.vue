@@ -301,33 +301,33 @@ export default {
         // Insert Property Description
         const { error } = await supabase.from('propertydescription').insert([{
             propertyinformation_id: propertyDescriptionData.propertyinformation_id,
-            no_of_storey: propertyDescriptionData.noOfStorey ?? 0,
-            year_built: Math.min(Math.max(propertyDescriptionData.yearBuilt ?? this.currentYear, 1800), this.currentYear),
-            floor_area: propertyDescriptionData.floorArea ?? 0,
+            noofstorey: propertyDescriptionData.noOfStorey ?? 0,
+            yearbuilt: Math.min(Math.max(propertyDescriptionData.yearBuilt ?? this.currentYear, 1800), this.currentYear),
+            floorarea: propertyDescriptionData.floorArea ?? 0,
             roofing: propertyDescriptionData.roofing || 'Unknown',
-            roofing_other: propertyDescriptionData.roofing === 'other' ? propertyDescriptionData.roofingOther || 'Specify other' : null,
+            roofingother: propertyDescriptionData.roofing === 'other' ? propertyDescriptionData.roofingOther || 'Specify other' : null,
             occupancy: propertyDescriptionData.occupancy || 'Unknown',
-            occupancy_other: ['warehouse', 'industrial-factory'].includes(propertyDescriptionData.occupancy) ? (propertyDescriptionData.occupancyOther || 'Specify other') : null,
-            number_of_tenants: propertyDescriptionData.numberOfTenants ?? 0,
-            type_of_construction: propertyDescriptionData.typeOfConstruction || 'Unknown',
+            occupancyother: ['warehouse', 'industrial-factory'].includes(propertyDescriptionData.occupancy) ? (propertyDescriptionData.occupancyOther || 'Specify other') : null,
+            numberoftenants: propertyDescriptionData.numberOfTenants ?? 0,
+            typeofconstruction: propertyDescriptionData.typeOfConstruction || 'Unknown',
             boundaryfront: propertyDescriptionData.boundaryFront ?? 0,
             boundaryright: propertyDescriptionData.boundaryRight ?? 0,
             boundaryleft: propertyDescriptionData.boundaryLeft ?? 0,
             boundaryrear: propertyDescriptionData.boundaryRear ?? 0,
-            loc_congested_area: ['yes', 'no'].includes(propertyDescriptionData.locCongestedArea) ? propertyDescriptionData.locCongestedArea : 'no',
-            loc_congested_area_details: propertyDescriptionData.locCongestedAreaDetails || null,
-            loc_explosive: ['yes', 'no'].includes(propertyDescriptionData.locExplosive) ? propertyDescriptionData.locExplosive : 'no',
-            loc_explosive_details: propertyDescriptionData.locExplosiveDetails || null,
-            loc_flood_prone: ['yes', 'no'].includes(propertyDescriptionData.locFloodProne) ? propertyDescriptionData.locFloodProne : 'no',
-            loc_flood_prone_details: propertyDescriptionData.locFloodProneDetails || null,
-            fire_loss: ['yes', 'no'].includes(propertyDescriptionData.fireLoss) ? propertyDescriptionData.fireLoss : 'no',
-            fire_loss_date: propertyDescriptionData.fireLossDate || null,
-            policy_cancelled: ['yes', 'no'].includes(propertyDescriptionData.policyCancelled) ? propertyDescriptionData.policyCancelled : 'no',
-            policy_cancelled_company: propertyDescriptionData.policyCancelledCompany || null,
-            policy_cancelled_date: propertyDescriptionData.policyCancelledDate || null,
-            risk_declined: ['yes', 'no'].includes(propertyDescriptionData.riskDeclined) ? propertyDescriptionData.riskDeclined : 'no',
-            risk_declined_company: propertyDescriptionData.riskDeclinedCompany || null,
-            risk_declined_date: propertyDescriptionData.riskDeclinedDate || null,
+            loccongestedarea: ['yes', 'no'].includes(propertyDescriptionData.locCongestedArea) ? propertyDescriptionData.locCongestedArea : 'no',
+            loccongestedareadetails: propertyDescriptionData.locCongestedAreaDetails || null,
+            locexplosive: ['yes', 'no'].includes(propertyDescriptionData.locExplosive) ? propertyDescriptionData.locExplosive : 'no',
+            locexplosivedetails: propertyDescriptionData.locExplosiveDetails || null,
+            locfloodprone: ['yes', 'no'].includes(propertyDescriptionData.locFloodProne) ? propertyDescriptionData.locFloodProne : 'no',
+            locfloodpronedetails: propertyDescriptionData.locFloodProneDetails || null,
+            fireloss: ['yes', 'no'].includes(propertyDescriptionData.fireLoss) ? propertyDescriptionData.fireLoss : 'no',
+            firelossdate: propertyDescriptionData.fireLossDate || null,
+            policycancelled: ['yes', 'no'].includes(propertyDescriptionData.policyCancelled) ? propertyDescriptionData.policyCancelled : 'no',
+            policycancelledcompany: propertyDescriptionData.policyCancelledCompany || null,
+            policycancelleddate: propertyDescriptionData.policyCancelledDate || null,
+            riskdeclined: ['yes', 'no'].includes(propertyDescriptionData.riskDeclined) ? propertyDescriptionData.riskDeclined : 'no',
+            riskdeclinedcompany: propertyDescriptionData.riskDeclinedCompany || null,
+            riskdeclineddate: propertyDescriptionData.riskDeclinedDate || null,
         },
         ]);
 
@@ -342,7 +342,7 @@ export default {
         alert('Property description saved successfully!');
 
         // Navigate to the next step
-        this.$router.push('/next-step');
+        this.$router.push('/PropertiesToBeCovered');
       } catch (error) {
         console.error('Unexpected error:', error);
         alert('An unexpected error occurred. Please try again.');
